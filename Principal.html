@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.98.0">
+  <title>Carousel Template · Bootstrap v5.2</title>
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/carousel/">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+    crossorigin="anonymous"></script>
+  <meta name="theme-color" content="#712cf9">
+
+
+  <style>
+    #info-table {
+      text-align: center;
+    }
+
+    #info-input {
+      width: 1200px;
+      margin: 0px auto;
+    }
+
+    #info-input>div {
+      width: 1200px;
+      margin: 20px 0px;
+    }
+
+    .shopCount {
+      color: orange;
+    }
+
+    a {
+      text-decoration: none;
+      color: deepskyblue;
+    }
+
+    #resultTotalMoney,
+    #integralTotal {
+      color: orange;
+    }
+
+    .total-div {
+      text-align: right;
+    }
+
+    .btdelete {
+      float: left;
+    }
+
+    .btorinter-div {
+      height: auto;
+      overflow: auto;
+    }
+
+    .viewIntegral {
+      float: right;
+    }
+
+    .btbuy {
+      background-color: orange;
+      color: white;
+      border: 0px;
+      float: right;
+    }
+
+    #shop {
+      width: 1200px;
+      margin: 0px auto;
+      height: auto;
+      overflow: auto;
+    }
+
+    #shop li {
+      text-align: center;
+      list-style: circle;
+      float: left;
+      height: auto;
+      overflow: auto;
+      margin: 5px;
+    }
+
+    #shop a {
+      display: block;
+      height: auto;
+      overflow: auto;
+    }
+
+    .price {
+      color: red;
+    }
+
+    body {
+      background-color: rgba(153, 158, 104, 0);
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    .b-example-divider {
+      height: 3rem;
+      background-color: rgba(0, 0, 0, 0.192);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+
+
+  <!-- Custom styles for this template -->
+  <link href="carousel.css" rel="stylesheet">
+</head>
+
+<script type="text/javascript">
+  // seleccionar todo
+  function selectAll() {
+    var obj = document.getElementsByClassName("selectOne");
+    var btSelectAll = document.getElementById("allCheck").checked;
+    for (inputCheck of obj) {
+      inputCheck.checked = btSelectAll;
+    }
+  }
+  // eliminación única
+  function deleteChild(obj) {
+    var nowtr = obj.parentElement.parentElement;
+    var nowtable = nowtr.parentElement;
+    nowtable.removeChild(nowtr);
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+  }
+  // eliminación por lotes
+  function selectDelete() {
+    var obj = document.getElementsByClassName("selectOne");
+    for (var i = obj.length - 1; i >= 0; i--) {
+      var nowCheck = obj[i];
+      if (nowCheck.checked == true) {
+        deleteChild(nowCheck);
+      }
+    }
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+  }
+
+  // reducir en cantidad
+  function reduce(obj) {
+    var textElement = obj.parentElement.children[1];
+    if (textElement.value == "1") {
+      return;
+    }
+    textElement.value = eval(textElement.value + "-1");
+    // Subtotal
+    var singelSumElement = obj.parentElement.parentElement.children[5];
+    singleSubTotal(singelSumElement);
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+  }
+  // Incrementa el número de
+  function plus(obj) {
+    var textElement = obj.parentElement.children[1];
+    textElement.value = eval(textElement.value + "+1");
+    // Subtotal
+    var singelSumElement = obj.parentElement.parentElement.children[5];
+    singleSubTotal(singelSumElement);
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+  }
+  // Inicializar todos los subtotales de productos
+  function singleAllSubTotal() {
+    var obj = document.getElementsByClassName("shopCount");
+    for (shopCount of obj) {
+      singleSubTotal(shopCount);
+    }
+  }
+  // Calcula el subtotal de un solo producto
+  function singleSubTotal(obj) {
+    var price = obj.parentElement.children[3].innerHTML;
+    var count = obj.parentElement.children[4].children[1].value;
+    obj.innerHTML = eval(price + "*" + count);
+  }
+  // El precio total de todos los bienes
+  function allShopPriceTotal() {
+    var obj = document.getElementById("resultTotalMoney");
+    var allSingelSubElement = document.getElementsByClassName("shopCount");
+    var sum = "0";
+    for (singelSubElement of allSingelSubElement) {
+      if (sum != "") {
+        sum += "+";
+      }
+      sum += singelSubElement.innerHTML;
+    }
+    obj.innerHTML = eval(sum);
+  }
+  // La suma de los puntos disponibles
+  function allIntegralTotal() {
+    // puntos totales
+    var obj = document.getElementById("integralTotal");
+    // integral simple
+    var allSingelIntegralElement = document.getElementsByClassName("integral");
+    // conjunto de cálculo
+    var sum = "0";
+    for (singelIntegralElement of allSingelIntegralElement) {
+      // Cantidad
+      var count = singelIntegralElement.parentElement.children[4].children[1].value;
+      if (sum != "") {
+        sum += "+";
+      }
+      sum += singelIntegralElement.innerHTML + "*" + 0;
+    }
+    obj.innerHTML = eval(sum);
+  }
+  // Compra ahora
+  function buyNow() {
+    var result = confirm("¡Ya sea para comprar todo!");
+    if (result == false) {
+      return
+    }
+    var obj = document.getElementById("mytable");
+    obj.innerHTML = "";
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+    alert("¡Compra exitosa!");
+  }
+
+  // Añadir al carrito
+  function addToCart(obj) {
+    var result = confirm('¿Añadir este producto al carrito de la compra? ');
+    if (result == false) {
+      return;
+    }
+    // Formulario de carrito de compras
+    var cartBox = document.getElementById("mytable");
+    // Objeto de mercancía
+    var shop = {
+      shopImg: obj.children[0].src,
+      shopIntegral: parseInt(eval(obj.children[2].innerHTML + "*0")),
+      shopPrice: obj.children[2].innerHTML
+    }
+    // Determine si el producto existe
+    var img = document.getElementsByClassName("imgbackground");
+    var result = "-1";
+    for (var i = 0; i < img.length; i++) {
+      if (shop.shopImg == img[i].children[0].src) {
+        result = i;
+      }
+    }
+    if (result != "-1") {
+      var count = img[result].parentElement.children[4].children[1];
+      count.value = eval(count.value + "+1");
+      // Recalcular el subtotal
+      singleAllSubTotal();
+    } else {
+      // Crea un objeto de carrito de compras
+      var tr = document.createElement("tr");
+      var td1 = document.createElement("td");
+      td1.innerHTML = '<input type="checkbox"  class="selectOne" />';
+      var td2 = document.createElement("td");
+      td2.className = "imgbackground";
+      td2.innerHTML = '<img src="' + shop.shopImg + '" height="100" width="100"/>';
+      var td3 = document.createElement("td");
+
+      var td4 = document.createElement("td");
+      td4.innerHTML = shop.shopPrice;
+      var td5 = document.createElement("td");
+      td5.innerHTML = '<button οnclick="reduce(this)">-</button>&nbsp;'
+        + '<input type="text" size="1" readonly="true" value="1"/>'
+        + '&nbsp;<button οnclick="plus(this)">+</button>';
+      var td6 = document.createElement("td");
+      td6.className = "shopCount";
+      td6.innerHTML = parseInt(shop.shopPrice);
+      var td7 = document.createElement("td");
+      td7.innerHTML = '<a href="#" class="delete" οnclick="deleteChild(this)"> Eliminar </a>';
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      tr.appendChild(td7);
+      // Añadir al carrito
+      cartBox.appendChild(tr);
+    }
+
+    // Precio total
+    allShopPriceTotal();
+    // puntos totales
+    allIntegralTotal();
+    // cambiar de color
+    changeBackground();
+  }
+  // El movimiento del mouse cambia el color de fondo
+  function changeBackground() {
+    var imgtd = document.getElementsByClassName("imgbackground");
+    for (singeltd of imgtd) {
+      singeltd.onmousemove = function () {
+        this.style.backgroundColor = "orange";
+      }
+      singeltd.onmouseleave = function () {
+        this.style.backgroundColor = "white";
+      }
+    }
+  }
+  // Inicializar el contenido de la interfaz
+  window.onload = function () {
+    changeBackground();
+    singleAllSubTotal();
+    allShopPriceTotal();
+    allIntegralTotal();
+  }
+</script>
+
+<body>
+
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="logo.jpg" height="50" width="50" /></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+
+            <li class="nav-item"><a class="nav-link" href="Admin.html">Iniciar Sesion</a></li>
+
+            <li class="nav-item"><a class="nav-link" href="#">Categoria</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Seguimiento</a></li>
+
+
+          </ul>
+          <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Buscar</button>
+          </form>
+
+
+
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+      <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true"
+            aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="imagene.jpg" style="width: 100%" />
+          </div>
+          <div class="carousel-item">
+            <img src="imagene(1).jpg" style="width: 100%" />
+          </div>
+          <div class="carousel-item">
+            <img src="imagene(3).jpg" style="width: 100%" />
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    <div class="container">
+      <div id="shop">
+        <h2> Nuestros Productos</h2>
+        <ul>
+
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (6).jpg" height="200" width="200" /><br />
+              <span class="price">2200</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (1).jpg" height="200" width="200" /><br />
+              <span class="price">1300</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (2).jpg" height="200" width="200" /><br />
+              <span class="price">1800</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="" onclick="addToCart(this);">
+              <img src="images (3).jpg" height="200" width="200" /><br />
+              <span class="price">1200</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (4).jpg" height="200" width="200" /><br />
+              <span class="price">1200</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (7).jpg" height="200" width="200" /><br />
+              <span class="price">2000</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (8).jpg" height="200" width="200" /><br />
+              <span class="price">2200</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (9).jpg" height="200" width="200" /><br />
+              <span class="price">1000</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (10).jpg" height="200" width="200" /><br />
+              <span class="price">2300</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (11).jpg" height="200" width="200" /><br />
+              <span class="price">2900</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (12).jpg" height="200" width="200" /><br />
+              <span class="price">2700</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (13).jpg" height="200" width="200" /><br />
+              <span class="price">2600</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (14).jpg" height="200" width="200" /><br />
+              <span class="price">1800</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (15).jpg" height="200" width="200" /><br />
+              <span class="price">2600</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (16).jpg" height="200" width="200" /><br />
+              <span class="price">2300</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (17).jpg" height="200" width="200" /><br />
+              <span class="price">1100</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (18).jpg" height="200" width="200" /><br />
+              <span class="price">1200</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (19).jpg" height="200" width="200" /><br />
+              <span class="price">2900</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (20).jpg" height="200" width="200" /><br />
+              <span class="price">1500</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="addToCart(this);">
+              <img src="images (5).jpg" height="200" width="200" /><br />
+              <span class="price">2800</span>$<br />
+              Añadir al carrito &raquo;
+            </a>
+          </li>
+
+        </ul>
+      </div>
+      <div class="container p-2 my-2 bg-dark text-white">
+        <h1>Bienvenido</h1>
+        <p>Somos una tienda de venta de articulos para mascotas, cuyo objetivo es ayudar a los
+          animales mediante la "Fundacion Animalover" sin fines de lucro. Cada año podemos aportar
+          junto a nuestros clientes un granito de arena en esta noble causa.Haz tu donacion a la "FUNDACION ANIMALOVER"
+          y
+          Obten un descuento del 5% en tu compra al unirte con nosotros.
+        <h3><a href="Registro.html">Registrate &raquo;</a></h3>
+        </p>
+      </div>
+    </div>
+    <div id="info-table">
+      <h1>Carrito de Compras</h1>
+      <table id="mytable" width="1200" align="center">
+        <tr>
+          <th><input type="checkbox" id="allCheck" onclick="selectAll()" />Seleccionar Todo</th>
+          <th>Imagen</th>
+          <th> </th>
+          <th>Precio unitario ($)</th>
+          <th>Cantidad</th>
+          <th>Subtotal ($)</th>
+          <th>Operando</th>
+        </tr>
+      </table>
+    </div>
+    <div id="info-input">
+      <div class="total-div">
+        <span>Precio total: $<span id="resultTotalMoney">0</span></span>
+      </div>
+      <div class="btorinter-div">
+        <button onclick="selectDelete()" class="btdelete">Eliminar seleccionado</button>
+      </div>
+      <div>
+        <button class="btbuy" onclick="buyNow()">Compra ahora</button>
+      </div>
+    </div>
+    </div>
+    <div class="container p-1 my-1 bg-dark text-white">
+      <h3 style="color:  rgb(227, 71, 18)" ;>Nuestros Contactos</h3>
+      <ul>
+        <li style="color: blue" ;> Celular : +5622760998</li>
+        <li style="color: blue" ;> Whatsapp : +5662760998</li>
+        <li style="color:  rgb(227, 71, 18)aliceblue"><a class="enlace" href="#">Correo Electronico</a></li>
+      </ul>
+
+    </div>
+
+    <footer class="container col-sm-4 p-3">
+      <p class="float-end"><a href="#"> Volver</a></p>
+      <p>&copy; 2021–2022 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </footer>
+
+</body>
+
+</html>
